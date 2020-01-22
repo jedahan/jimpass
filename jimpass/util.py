@@ -43,6 +43,21 @@ def srun(input_cmd: str, stdin: str = None, no_output: bool = False) -> (int, st
         res = run(input_cmd, stdout=DEVNULL if no_output else PIPE, stderr=DEVNULL, encoding="utf-8", shell=True)
         return res.returncode, res.stdout
 
+def wofi(mode: str = "dmenu", prompt: str = None, options: list = None,
+         args: dict = None, stdin: str = None) -> (int, str):
+    """
+    Run Wofi
+    """
+    cmd = "wofi "
+    if mode:
+        cmd += f"--{mode} "
+    if prompt:
+        cmd += f"-p \"{prompt}\" "
+    if options:
+        cmd += " ".join([f"-{opt}" for opt in options]) + " "
+    if args:
+        cmd += " ".join([f"-{key} \"{val}\"" for key, val in args.items()]) + " "
+    return srun(cmd, stdin) if stdin else srun(cmd)
 
 def rofi(mode: str = "dmenu", prompt: str = None, options: list = None,
          keybindings: list = None, args: dict = None, stdin: str = None) -> (int, str):

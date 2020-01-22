@@ -4,6 +4,7 @@ DEFAULTS = {
     'auto_lock': False,
     'clipboard_timeout': 5,
     'copy_command': 'xclip',
+    'runner': 'rofi',
     'danger_mode': False,
     'keybindings': {
         'type_all': 'alt+1',

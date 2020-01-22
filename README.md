@@ -23,7 +23,7 @@ This project was **heavily** inspired by and builds on top of the ideas in [bitw
 
 ---
 
-A backend-agnostic credential launcher/manager. Powered by [Rofi](https://github.com/davatorium/rofi).
+A backend-agnostic credential launcher/manager. Powered by [Rofi](https://github.com/davatorium/rofi) or [Wofi](https://todo.sr.ht/~scoopta/wofi).
 
 ---
 
@@ -55,7 +55,7 @@ See the [currently implemented ones](jimpass/managers)
 ## Dependencies
 
 - [python3.6+](https://www.python.org/)
-- [rofi](https://github.com/davatorium/rofi)
+- [rofi](https://github.com/davatorium/rofi) or [wofi](https://todo.sr.ht/~scoopta/wofi)
 - [xdotool](https://www.semicomplete.com/projects/xdotool/)
 - `xclip` / `wl-copy` / `xsel`
 
@@ -147,6 +147,7 @@ lock_timer: 500 # Ignored if auto_lock: False
 clipboard_timeout: 5
 copy_command: xclip # Command to use when copying [xclip|xsel|wayland]
 danger_mode: False # After auto-typing a password, immediately presses Return
+runner: rofi # wofi is an option, but not as full featured
 keybindings:
   # pressing Return copies the password under the selected entry.
   type_all: 'alt+1'

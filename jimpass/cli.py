@@ -67,6 +67,8 @@ def cli(config, lock, lock_timer, clipboard_timeout, copy_command, danger_mode):
             config['lock_timer'] = lock_timer
         elif 'lock_timer' not in config:
             config['lock_timer'] = DEFAULTS['lock_timer']
+    if 'runner' not in config:
+        config['runner'] = DEFAULTS['runner']
     # clipboard
     populate_option(clipboard_timeout, 'clipboard_timeout', config)
     # copy-command
