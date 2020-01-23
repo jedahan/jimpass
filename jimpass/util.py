@@ -48,22 +48,24 @@ def prun(runner: str = "rofi", mode: str = "dmenu", prompt: str = None, options:
     """
     Wrapper for popup rofi/wofi
     """
-    cmd = "{runner} "
-    prefix = "-"
-
     if runner == "wofi":
         prefix = "--"
+    else:
+        prefix = "-"
+
+    args = [ runner ]
 
     if mode:
-        cmd += f"{prefix}{mode}"
+        args.append(f"{prefix}{mode}")
     if prompt:
-        cmd += f"-p \"{prompt}\" "
+        args.append(f"-p \"{prompt}\"")
     if options:
-        cmd += " ".join([f"{prefix}{opt}" for opt in options]) + " "
+        args.append(" ".join([f"{prefix}{opt}" for opt in options]))
     if keybindings:
         if runner == "rofi":
-            cmd += " ".join([f"-kb-custom-{kb.exit_code} {kb.mapping}" for kb in keybindings]) + " "
+            args.append(" ".join([f"-kb-custom-{kb.exit_code} {kb.mapping}" for kb in keybindings]))
     if args:
-        cmd += " ".join([f"{prefix}{key} \"{val}\"" for key, val in args.items()]) + " "
+        args.append(" ".join([f"{prefix}{key} \"{val}\"" for key, val in args.items()]))
 
+    cmd = " ".join(args)
     return srun(cmd, stdin) if stdin else srun(cmd)
