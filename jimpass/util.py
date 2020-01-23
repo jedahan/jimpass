@@ -53,19 +53,19 @@ def prun(runner: str = "rofi", mode: str = "dmenu", prompt: str = None, options:
     else:
         prefix = "-"
 
-    args = [ runner ]
+    cmd = [ runner ]
 
     if mode:
-        args.append(f"{prefix}{mode}")
+        cmd.append(f"{prefix}{mode}")
     if prompt:
-        args.append(f"-p \"{prompt}\"")
+        cmd.append(f"-p \"{prompt}\"")
     if options:
-        args.append(" ".join([f"{prefix}{opt}" for opt in options]))
+        cmd.append(" ".join([f"{prefix}{opt}" for opt in options]))
     if keybindings:
         if runner == "rofi":
-            args.append(" ".join([f"-kb-custom-{kb.exit_code} {kb.mapping}" for kb in keybindings]))
+            cmd.append(" ".join([f"-kb-custom-{kb.exit_code} {kb.mapping}" for kb in keybindings]))
     if args:
-        args.append(" ".join([f"{prefix}{key} \"{val}\"" for key, val in args.items()]))
+        cmd.append(" ".join([f"{prefix}{key} \"{val}\"" for key, val in args.items()]))
 
-    cmd = " ".join(args)
+    cmd = " ".join(cmd)
     return srun(cmd, stdin) if stdin else srun(cmd)
