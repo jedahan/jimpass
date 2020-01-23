@@ -5,7 +5,7 @@ Interface with both Password Managers and Rofi/Wofi
 import time
 from typing import NamedTuple
 from jimpass.managers.base import PasswordManager
-from jimpass.util import rofi, wofi, srun
+from jimpass.util import prun, srun
 
 COPY_COMMANDS = {
     'xclip': {
@@ -24,7 +24,6 @@ COPY_COMMANDS = {
         'clear': 'wl-copy --clear'
     }
 }
-
 
 class Controller:
     """
@@ -128,16 +127,15 @@ class Controller:
         """
         runner_input = '\n'.join([mgr.stringify_items()
                                 for name, mgr in self.managers.items()])
-        if self.config['runner'] == "wofi":
-            exit_code, response = wofi(prompt="Name",
-                                   args={'mesg': f"{self._generate_instructions()}"},
-                                   stdin=runner_input)
-        else: 
-            exit_code, response = rofi(prompt="Name",
-                                   keybindings=self.keybindings,
-                                   options=['i', 'no-custom'],
-                                   args={'mesg': f"{self._generate_instructions()}"},
-                                   stdin=runner_input)
+
+        exit_code, response = prun(
+                               runner=self.config['runner'],
+                               prompt="Name",
+                               keybindings=self.keybindings,
+                               options=['i', 'no-custom'],
+                               args={'mesg': f"{self._generate_instructions()}"},
+                               stdin=runner_input)
+
         # if response and exit_code in self.exit_code_to_output.keys():
         if response:
             result_list = [(mgr, mgr.search(mgr.parser.loads(response)))
@@ -154,16 +152,13 @@ class Controller:
     def _deduplicate(self, items: [dict], mgr: PasswordManager) -> (int, dict):
         mgr.parser.template_str = mgr.full_template_str
         runner_input = mgr.stringify_items(items)
-        if self.config['runner'] == "wofi":
-            exit_code, response = wofi(prompt="Name",
-                                   args={'mesg': self._generate_instructions()+"\n Entries duplicated!"},
-                                   stdin=runner_input)
-        else:
-            exit_code, response = rofi(prompt="Deduplicate",
-                                   keybindings=self.keybindings,
-                                   options=['i', 'no-custom'],
-                                   args={'mesg': self._generate_instructions()+"\n Entries duplicated!"},
-                                   stdin=runner_input)
+        exit_code, response = prun(
+                               runner=self.config['runner'],
+                               prompt="Deduplicate",
+                               keybindings=self.keybindings,
+                               options=['i', 'no-custom'],
+                               args={'mesg': self._generate_instructions()+"\n Entries duplicated!"},
+                               stdin=runner_input)
         if response:
             item = mgr.search(mgr.parser.loads(response))
             return exit_code, item

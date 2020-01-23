@@ -43,36 +43,27 @@ def srun(input_cmd: str, stdin: str = None, no_output: bool = False) -> (int, st
         res = run(input_cmd, stdout=DEVNULL if no_output else PIPE, stderr=DEVNULL, encoding="utf-8", shell=True)
         return res.returncode, res.stdout
 
-def wofi(mode: str = "dmenu", prompt: str = None, options: list = None,
-         args: dict = None, stdin: str = None) -> (int, str):
-    """
-    Run Wofi
-    """
-    cmd = "wofi "
-    if mode:
-        cmd += f"--{mode} "
-    if prompt:
-        cmd += f"-p \"{prompt}\" "
-    if options:
-        cmd += " ".join([f"-{opt}" for opt in options]) + " "
-    if args:
-        cmd += " ".join([f"-{key} \"{val}\"" for key, val in args.items()]) + " "
-    return srun(cmd, stdin) if stdin else srun(cmd)
-
-def rofi(mode: str = "dmenu", prompt: str = None, options: list = None,
+def prun(runner: str = "rofi", mode: str = "dmenu", prompt: str = None, options: list = None,
          keybindings: list = None, args: dict = None, stdin: str = None) -> (int, str):
     """
-    Run Rofi
+    Wrapper for popup rofi/wofi
     """
-    cmd = "rofi "
+    cmd = runner
+    prefix = "-"
+
+    if runner == "wofi":
+        prefix = "--"
+
     if mode:
-        cmd += f"-{mode} "
+        cmd += f"{prefix}{mode}"
     if prompt:
         cmd += f"-p \"{prompt}\" "
     if options:
-        cmd += " ".join([f"-{opt}" for opt in options]) + " "
+        cmd += " ".join([f"{prefix}{opt}" for opt in options]) + " "
     if keybindings:
-        cmd += " ".join([f"-kb-custom-{kb.exit_code} {kb.mapping}" for kb in keybindings]) + " "
+        if runner == "rofi":
+            cmd += " ".join([f"-kb-custom-{kb.exit_code} {kb.mapping}" for kb in keybindings]) + " "
     if args:
-        cmd += " ".join([f"-{key} \"{val}\"" for key, val in args.items()]) + " "
+        cmd += " ".join([f"{prefix}{key} \"{val}\"" for key, val in args.items()]) + " "
+
     return srun(cmd, stdin) if stdin else srun(cmd)
