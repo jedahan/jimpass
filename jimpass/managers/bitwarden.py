@@ -1,4 +1,4 @@
-from jimpass.util import srun, rofi, wofi
+from jimpass.util import prun, srun
 from jimpass.managers.base import PasswordManager
 from jimpass.parser import Parser
 import json
@@ -66,26 +66,15 @@ class BitwardenSession(object):
         """ Get the key holding the session hash """
         code, stdout = srun("keyctl request user bw_session")
         if code != 0 or not stdout:
-            if self.config['runner'] == "wofi":
-                code, passwd = wofi(
-                    prompt='Bitwarden Master Password',
-                    options=[
-                        'password'
-                    ],
-                    args={
-                       'lines': 0
-                    }
-                )
-            else:
-                code, passwd = rofi(
-                    prompt='Bitwarden Master Password',
-                    options=[
-                        'password'
-                    ],
-                    args={
-                       'lines': 0
-                    }
-                )
+            code, passwd = prun(
+                prompt='Bitwarden Master Password',
+                options=[
+                    'password'
+                ],
+                args={
+                   'lines': 0
+                }
+            )
             code, session_key = srun("bw unlock --raw", stdin=passwd)
             if code == 0:
                 self.set_session(session_key)
