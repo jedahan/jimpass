@@ -48,7 +48,7 @@ def prun(runner: str = "rofi", mode: str = "dmenu", prompt: str = None, options:
     """
     Wrapper for popup rofi/wofi
     """
-    cmd = runner
+    cmd = "{runner} "
     prefix = "-"
 
     if runner == "wofi":
