@@ -33,6 +33,7 @@ class Controller:
         self.managers = {}
         self.config = config
         self.context = 'base'
+        self.runner = config['runner']
         self.keybindings: [KeyBinding] = [
             KeyBinding(exit_code=0, callback='copy_pass')
         ]
@@ -129,7 +130,7 @@ class Controller:
                                 for name, mgr in self.managers.items()])
 
         exit_code, response = prun(
-                               runner=self.config['runner'],
+                               runner=self.runner,
                                prompt="Name",
                                keybindings=self.keybindings,
                                options=['i', 'no-custom'],
@@ -153,7 +154,7 @@ class Controller:
         mgr.parser.template_str = mgr.full_template_str
         runner_input = mgr.stringify_items(items)
         exit_code, response = prun(
-                               runner=self.config['runner'],
+                               runner=self.runner,
                                prompt="Deduplicate",
                                keybindings=self.keybindings,
                                options=['i', 'no-custom'],
